@@ -1,0 +1,125 @@
+=========================================================
+  SERIE II - RESPUESTAS Y DOCUMENTACIÓN
+  Sistema de Reservas de Hotel - Hotel.App / Hotel.Modelos
+=========================================================
+
+──────────────────────────────────────────────────────────
+1. MAPA MENTAL DE LA SOLUCIÓN
+──────────────────────────────────────────────────────────
+
+PROBLEMA: Administrar reservas de hotel desde consola
+
+    ┌─────────────────────────────────────────────────────┐
+    │               SISTEMA DE RESERVAS                   │
+    └──────────────────┬──────────────────────────────────┘
+                       │
+         ┌─────────────┴──────────────┐
+         │                            │
+   ┌─────▼──────┐             ┌───────▼──────┐
+   │Hotel.Modelos│            │  Hotel.App   │
+   │(Biblioteca) │            │  (Consola)   │
+   └──────┬──────┘            └───────┬──────┘
+          │                           │
+    ┌─────┴──────┐             ┌──────▼──────┐
+    │  Reserva   │             │  Program.cs  │
+    │  - Cliente │             │  - MostrarMenu()
+    │  - Hab.    │             │  - RegistrarNuevaReserva()
+    │  - Fecha   │             │  - LeerEntero()
+    │  - Noches  │             │  - LeerDecimal()
+    │  - Precio  │             └─────────────┘
+    │            │
+    │ Métodos:   │
+    │ + CalcularTotal()
+    │ + ObtenerResumen()
+    │ + AFormatoCSV()
+    │ + DesdeCsv() [static]
+    └──────┬──────┘
+           │
+    ┌──────▼──────┐
+    │   Hotel     │
+    │ - List<Reserva>
+    │             │
+    │ Métodos:    │
+    │ + RegistrarReserva()
+    │ + ListarReservas()
+    │ + CalcularIngresoTotal()
+    │ + MostrarReservaMayorDuracion()
+    │ + GuardarEnArchivo() [privado]
+    │ + CargarDesdeArchivo() [privado]
+    └─────────────┘
+           │
+    ┌──────▼──────┐
+    │ reservas.csv│  ← Archivo de texto para persistencia
+    └─────────────┘
+
+OPERACIONES DEL MENÚ:
+  [1] Registrar reserva → Lee datos → Crea objeto Reserva → Llama RegistrarReserva()
+  [2] Listar reservas   → Itera List<Reserva> → Imprime ObtenerResumen()
+  [3] Ingreso total     → Suma CalcularTotal() de cada reserva
+  [4] Mayor duración    → Recorre lista buscando mayor Noches
+
+
+──────────────────────────────────────────────────────────
+2. DECISIONES TÉCNICAS TOMADAS
+──────────────────────────────────────────────────────────
+
+a) ESTRUCTURA DE DATOS: List<Reserva>
+   - Se eligió List<T> porque permite agregar elementos dinámicamente,
+     iterar fácilmente con foreach, y acceder por índice.
+   - Alternativas descartadas: Array (tamaño fijo), Dictionary (no necesitamos clave-valor).
+
+b) SEPARACIÓN DE ARCHIVOS (como pide el enunciado):
+   - Hotel.Modelos → biblioteca de clases con Reserva.cs y Hotel.cs
+   - Hotel.App     → aplicación de consola con Program.cs
+   - Esto sigue el principio de separación de responsabilidades (SRP).
+
+c) MODIFICADORES DE ACCESO:
+   - Propiedades de Reserva: public (necesitan leerse desde Hotel.App)
+   - Métodos de negocio: public (parte de la API del modelo)
+   - GuardarEnArchivo() y CargarDesdeArchivo(): private (detalles internos de Hotel)
+   - Colección reservas en Hotel: private (nadie debe modificarla directamente desde afuera)
+
+d) PERSISTENCIA EN ARCHIVO DE TEXTO (reservas.csv):
+   - Se usa CSV (valores separados por coma) por su simplicidad y legibilidad.
+   - Al iniciar, Hotel carga automáticamente las reservas guardadas.
+   - Al registrar una reserva, se guarda inmediatamente (no se pierde si cierra el programa).
+
+e) VALIDACIÓN DE ENTRADAS:
+   - Se valida que números sean positivos (habitación, noches, precio).
+   - La fecha usa TryParseExact con formato DD/MM/AAAA para evitar errores.
+
+f) PLANTILLA DEL INGENIERO (Reserva.cs base):
+   - Se respetó la estructura: clase con propiedades { get; set; }
+   - Se añadieron FechaIngreso y PrecioPorNoche que pedía el enunciado.
+   - El método CalcularTotal() es el equivalente corregido del CalcularCosto()
+     del análisis de la Serie III (sin static, sin typo).
+
+g) ESTRUCTURAS DE CONTROL Y REPETITIVAS utilizadas:
+   - while: bucle principal del menú y validación de entradas
+   - foreach: para iterar sobre la lista de reservas
+   - switch: para manejar opciones del menú
+   - for: para listar reservas con número de índice
+
+
+──────────────────────────────────────────────────────────
+3. ¿QUÉ PARTES SE ELABORARON MANUALMENTE Y CUÁLES CON IA?
+──────────────────────────────────────────────────────────
+
+PARTES ELABORADAS CON ASISTENCIA DE IA (Claude):
+  - Generación completa de Reserva.cs, Hotel.cs y Program.cs
+  - Diseño del mapa mental y estructura del proyecto
+  - Decisión de usar CSV para persistencia y métodos AFormatoCSV()/DesdeCsv()
+  - Formato del menú con bordes ASCII (╔══╗)
+  - Manejo de errores en LeerEntero() y LeerDecimal()
+  - Documentación XML (<summary>) de cada método
+  - Este archivo respuestas.txt
+
+PARTES QUE REQUIEREN TRABAJO MANUAL DEL ESTUDIANTE:
+  - Crear el proyecto en Visual Studio / VS Code con la plantilla correcta
+  - Crear la solución con dos proyectos: Hotel.Modelos (Class Library) y Hotel.App (Console App)
+  - Agregar la referencia de Hotel.App hacia Hotel.Modelos
+  - Verificar que compila correctamente con dotnet build
+  - Ejecutar la aplicación y tomar capturas de pantalla como evidencia
+  - Subir la carpeta completa a la plataforma Canvas
+
+=========================================================
