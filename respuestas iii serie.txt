@@ -1,0 +1,33 @@
+III SERIE:
+
+1. ¿Qué error(es) hay en este código? ¿Cómo lo solucionaría?
+
+El principal error que encontré es que el método CalcularCosto está declarado como static, pero intenta usar la variable Noches, que pertenece a cada reserva en particular. En C#, un método estático no puede acceder directamente a datos que pertenecen a una instancia.
+
+También vi un error de escritura en el nombre de la variable precioPorNoche, ya que en el retorno aparece escrita diferente.
+
+Para solucionarlo, lo más sencillo sería quitar el static del método para que pueda acceder a Noches sin problemas. Otra opción sería dejarlo estático, pero pasando la cantidad de noches como parámetro.
+
+2. ¿Qué diferencias habría si Reserva fuera una clase en lugar de struct?
+
+La diferencia principal es que un struct es un tipo de valor y una class es un tipo de referencia, Eso significa que cuando se copia un struct, se crea una copia independiente de todos sus datos. En cambio, con una clase, varias variables pueden estar apuntando al mismo objeto.
+
+También las clases permiten herencia, mientras que los structs no. Además, una clase puede tener valor null, mientras que un struct normalmente no.
+
+En este caso considero que Reserva funcionaría mejor como una clase, porque contiene varios datos y probablemente en el futuro necesite más funcionalidades.
+
+3. ¿Los modificadores de acceso son correctos? Razone su respuesta.
+
+No del todo. Los atributos están declarados como public, lo que significa que cualquier parte del programa puede modificarlos libremente.
+
+El problema es que eso puede provocar datos incorrectos, por ejemplo que alguien asigne una cantidad negativa de noches o de huéspedes.
+
+Yo utilizaría atributos privados y propiedades para controlar los cambios y validar que los datos ingresados sean correctos. De esa forma el código es más seguro y fácil de mantener.
+
+4. ¿Está correctamente estructurado para mejorarse en futuras versiones? ¿Por qué?
+
+Pienso que puede mejorarse bastante pero primero, porque los datos están expuestos directamente y no hay validaciones. Segundo, porque el constructor solo inicializa algunos valores y deja otros con valores por defecto, lo que podría causar errores.
+
+Además, si más adelante se quisiera agregar más lógica o aprovechar herencia, usar un struct podría ser una limitación.
+
+Por eso recomendaría convertir Reserva en una clase, utilizar propiedades con validaciones y crear constructores más completos para asegurar que todos los datos se inicialicen correctamente desde el principio.
